@@ -1,0 +1,61 @@
+name: Autograding C
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main branch (kode siswa)
+      uses: actions/checkout@v3
+      with:
+        ref: main  # Memastikan kita berada di branch main
+
+    - name: Fetch grading branch
+      run: |
+        git fetch origin grading || echo "Branch grading tidak ditemukan, melewati fetch."
+        git checkout grading  # Checkout ke grading branch
+
+    - name: Copy test.c from grading branch
+      run: |
+        git checkout main  # Kembali ke main
+        git checkout grading -- test.c  # Ambil test.c dari grading branch
+
+    - name: Verifikasi isi direktori
+      run: ls -la  # Tampilkan isi direktori
+
+    - name: Set up GCC
+      run: sudo apt-get install -y gcc make
+
+    - name: Build dan jalankan tes
+      run: |
+        echo "Isi direktori sebelum kompilasi:"
+        ls -la  # Tampilkan isi direktori untuk memastikan kedua file ada
+
+        # Kompilasi kode siswa dan test.c
+        gcc -o main program.c test.c  
+        if [ $? -ne 0 ]; then  # Periksa jika kompilasi gagal
+          echo "Kompilasi gagal."
+          exit 1  # Keluar dengan kode error
+        fi
+
+        # Jalankan program dan redirect output ke file log
+        ./main > test.log  
+        if [ $? -ne 0 ]; then  # Periksa jika program gagal dijalankan
+          echo "Program gagal dijalankan."
+          exit 1  # Keluar dengan kode error
+        fi
+
+    - name: Unggah hasil tes
+      if: failure()  # Unggah jika langkah sebelumnya gagal
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: test.log  # Pastikan path sudah benar
