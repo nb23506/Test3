@@ -28,8 +28,7 @@ void run_tests() {
     }
 }
 
-// Hapus fungsi main dari test.c
-// int main() {
-//     run_tests();
-//     return 0;
-// }
+int main() {
+    run_tests();
+    return 0;
+}
