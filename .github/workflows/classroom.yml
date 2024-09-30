@@ -1,4 +1,4 @@
-name: Autograding c
+name: Autograding C
 
 on:
   push:
@@ -17,25 +17,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: main  # Memastikan kita berada di branch main
-          
 
-      - name: Fetch grading branch from template repository
+      - name: Fetch test.c from grading branch in template repository
         run: |
           git remote add template https://github.com/SITProgrammingFall2024/test3.git
           git fetch template grading || echo "Branch grading tidak ditemukan, melewati fetch."
           git checkout template/grading -- test.c || echo "Tidak dapat checkout test.c dari grading."
-      
-
-    
-      - name: Fetch grading branch
-        run: |
-          git fetch origin grading || echo "Branch grading tidak ditemukan, melewati fetch."
-          git checkout grading  # Checkout ke grading branch
-
-      - name: Copy test.c from grading branch
-        run: |
-          git checkout main  # Kembali ke main
-          git checkout grading -- test.c  # Ambil test.c dari grading branch
 
       - name: Verifikasi isi direktori
         run: ls -la  # Tampilkan isi direktori
