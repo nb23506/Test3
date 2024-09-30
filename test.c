@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Deklarasi fungsi
+// Deklarasi fungsi dari program.c
 int larger_number(int x, int y);
 
 void run_tests() {
@@ -28,7 +28,8 @@ void run_tests() {
     }
 }
 
-int main() {
-    run_tests();
-    return 0;
-}
+// Hapus fungsi main dari test.c
+// int main() {
+//     run_tests();
+//     return 0;
+// }
